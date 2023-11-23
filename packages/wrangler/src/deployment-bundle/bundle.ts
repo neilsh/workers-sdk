@@ -327,7 +327,7 @@ export async function bundleWorker(
 			...(legacyNodeCompat
 				? [NodeGlobalsPolyfills({ buffer: true }), NodeModulesPolyfills()]
 				: []),
-			...(nodejsCompat ? [nodejsCompatPlugin] : []),
+			nodejsCompatPlugin(!!nodejsCompat),
 			cloudflareInternalPlugin,
 			buildResultPlugin,
 			...(plugins || []),
