@@ -30,8 +30,8 @@ export interface StartDevWorkerOptions {
 	/** The compatibility flags for the workerd runtime. */
 	compatibilityFlags?: string[];
 
-	/** The bindings available to the worker. The specified bindind type will be exposed to the worker on the `env` object under the same key. */
-	bindings?: Record<string, Binding>; // Type level constraint for bindings not sharing names
+	/** The bindings available to the worker. The specified binding type will be exposed to the worker on the `env` object under the same key. */
+	bindings?: Bindings; // Type level constraint for bindings not sharing names
 	/** The triggers which will cause the worker's exported default handlers to be called. */
 	triggers?: Trigger[];
 
@@ -157,6 +157,8 @@ export type Trigger =
 			maxRetries?: string;
 			deadLetterQueue?: string;
 	  };
+
+export type Bindings = Record<string, Binding>;
 
 export type Binding =
 	| { type: "kv"; id: string }
