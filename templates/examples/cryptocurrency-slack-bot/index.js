@@ -2,7 +2,7 @@
 // Keep this value secret.
 let SLACK_TOKEN = "PUTYOURTOKENHERE";
 let BOT_NAME = "Crypto-bot 🤖";
-let REPO_URL = "https://github.com/cloudflare/workers-sdk/templates";
+let REPO_URL = "https://github.com/cloudflare/workers-sdk/tree/main/templates";
 
 let jsonHeaders = new Headers([["Content-Type", "application/json"]]);
 
