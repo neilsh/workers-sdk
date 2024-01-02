@@ -18,6 +18,7 @@ import {
 	apiAppDirHelloTs,
 	apiPagesDirHelloJs,
 	apiPagesDirHelloTs,
+	nextConfig,
 } from "./templates";
 import type { C3Args, FrameworkConfig, PagesGeneratorContext } from "types";
 
@@ -94,6 +95,8 @@ const configure = async (ctx: PagesGeneratorContext) => {
 		startText: "Adding the Cloudflare Pages adapter",
 		doneText: `${brandColor(`installed`)} ${dim(packages.join(", "))}`,
 	});
+
+	writeFile(path, nextConfig);
 };
 
 export const shouldInstallNextOnPagesEslintPlugin = async (
