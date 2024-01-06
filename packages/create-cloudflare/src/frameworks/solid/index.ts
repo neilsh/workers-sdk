@@ -1,6 +1,6 @@
 import { logRaw, updateStatus } from "@cloudflare/cli";
-import { brandColor, dim, blue } from "@cloudflare/cli/colors";
-import { installPackages, runFrameworkGenerator } from "helpers/command";
+import { blue } from "@cloudflare/cli/colors";
+import { runFrameworkGenerator } from "helpers/command";
 import { compatDateFlag, usesTypescript, writeFile } from "helpers/files";
 import { detectPackageManager } from "helpers/packages";
 import { viteConfig } from "./templates";
@@ -18,22 +18,12 @@ const generate = async (ctx: PagesGeneratorContext) => {
 const configure = async (ctx: PagesGeneratorContext) => {
 	process.chdir(ctx.project.path);
 
-	// Install the pages adapter
-	const pkg = "solid-start-cloudflare-pages";
-	await installPackages([pkg], {
-		dev: true,
-		startText: "Adding the Cloudflare Pages adapter",
-		doneText: `${brandColor(`installed`)} ${dim(pkg)}`,
-	});
-
 	// modify the vite config
 	const viteConfigPath = usesTypescript()
 		? `./vite.config.ts`
 		: `./vite.config.js`;
 	writeFile(viteConfigPath, viteConfig);
-	updateStatus(
-		`Adding the Cloudflare Pages adapter to ${blue(viteConfigPath)}`
-	);
+	updateStatus(`Adding the Cloudflare Pages preset to ${blue(viteConfigPath)}`);
 };
 
 const config: FrameworkConfig = {
@@ -42,7 +32,7 @@ const config: FrameworkConfig = {
 	displayName: "Solid",
 	getPackageScripts: async () => ({
 		"pages:dev": `wrangler pages dev ${await compatDateFlag()} --proxy 3000 -- ${npm} run dev`,
-		"pages:deploy": `${npm} run build && wrangler pages deploy ./dist/public`,
+		"pages:deploy": `${npm} run build && wrangler pages deploy ./dist`,
 	}),
 };
 export default config;

@@ -1,9 +1,12 @@
 export const viteConfig = `
-import solid from "solid-start/vite";
-import { defineConfig } from "vite";
-import cloudflare from "solid-start-cloudflare-pages";
+import { defineConfig } from "@solidjs/start/config";
 
 export default defineConfig({
-  plugins: [solid({ adapter: cloudflare({}) })],
+    // @ts-ignore
+    start: {
+        server: {
+            preset: "cloudflare-pages",
+        }
+    }
 });
 `;
