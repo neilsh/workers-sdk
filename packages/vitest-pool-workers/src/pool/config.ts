@@ -2,7 +2,8 @@ import path from "node:path";
 import { PLUGINS } from "miniflare";
 import { formatZodError, getRootPath, parseWithRootPath } from "miniflare";
 import { z } from "zod";
-import type { WorkerOptions } from "miniflare";
+import type { Awaitable, WorkerOptions } from "miniflare";
+import type { ProvidedContext } from "vitest";
 import type { WorkspaceProject } from "vitest/node";
 import type { ParseParams, ZodError } from "zod";
 
@@ -135,14 +136,23 @@ function parseCustomPoolOptions(
 	return options as WorkersProjectOptions;
 }
 
-export function parseProjectOptions(
+export async function parseProjectOptions(
 	project: WorkspaceProject
-): WorkersProjectOptions {
+): Promise<WorkersProjectOptions> {
 	const rootPath =
 		typeof project.path === "string" ? path.dirname(project.path) : "";
 	const poolOptions = project.config.poolOptions;
-	const workersPoolOptions = poolOptions?.workers ?? {};
+	let workersPoolOptions = poolOptions?.workers ?? {};
 	try {
+		if (typeof workersPoolOptions === "function") {
+			// https://github.com/vitest-dev/vitest/blob/v1.0.0/packages/vitest/src/integrations/inject.ts
+			const inject = <K extends keyof ProvidedContext>(
+				key: K
+			): ProvidedContext[K] => {
+				return project.getProvidedContext()[key];
+			};
+			workersPoolOptions = await workersPoolOptions({ inject });
+		}
 		return parseCustomPoolOptions(rootPath, workersPoolOptions, {
 			path: OPTIONS_PATH_ARRAY,
 		});
